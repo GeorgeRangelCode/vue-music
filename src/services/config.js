@@ -1,5 +1,5 @@
 const configService = {
-  apiUrl: "url-api"
+  apiUrl: 'https://platzi-music-api.now.sh/',
 };
 
 export default configService;
