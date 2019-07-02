@@ -5,10 +5,11 @@
         .container
           .nav-left
             .nav-item
-              strong Music
-          .nav-right.nav-menu
+              strong 📻  Platzi Music
+            .nav-right.nav-menu
+
     .hero-body
       .container.has-text-centered
-        h1.title Music
-        h1.subtitle Canciones que estan Vue-nisimas!
+        h1.title Platzi Music
+        h2.subtitle Canciones que estan Vue-nisimas!
 </template>

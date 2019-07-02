@@ -1,7 +1,8 @@
 <template lang="pug">
   #app
     pm-header
-    section.section
+    pm-loader(v-show="isLoading")
+    section.section(v-show="!isLoading")
       nav.nav.has-shadow
         .container
           input.input.is-large(type="text", placeholder="Buscar Canciones", v-model="searchQuery")
@@ -11,29 +12,34 @@
         p
           small {{searchMessage}}
       .container.results
-        .columns
-          .column(v-for="track in tracks") 
-            | {{track.name}} - {{track.artists[0].name}}
+        .columns.is-multiline
+          .column.is-one-quarter(v-for="track in tracks") 
+            pm-track(v-bind:track="track")
     pm-footer
 </template>
 
 <script>
-import trackSevice from "./services/trackService";
-import PmFooter from "./components/layout/Footer.vue";
-import PmHeader from "./components/layout/Header.vue";
+import trackSevice from "@/services/trackService";
+import PmFooter from "@/components/layout/Footer.vue";
+import PmHeader from "@/components/layout/Header.vue";
+import PmTrack from "@/components/track.vue";
+import PmLoader from "@/components/shared/Loader.vue";
 
 export default {
   name: "app",
 
   components: {
     PmFooter,
-    PmHeader
+    PmHeader,
+    PmTrack,
+    PmLoader
   },
 
   data() {
     return {
       searchQuery: "",
-      tracks: []
+      tracks: [],
+      isLoading: false
     };
   },
 
@@ -48,9 +54,11 @@ export default {
       if (!this.searchQuery) {
         return;
       }
-      trackSevice
-        .search(this.searchQuery)
-        .then(response => (this.tracks = response.tracks.items));
+      this.isLoading = true;
+      trackSevice.search(this.searchQuery).then(response => {
+        this.tracks = response.tracks.items;
+        this.isLoading = false;
+      });
     }
   }
 };
