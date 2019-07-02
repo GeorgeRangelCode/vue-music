@@ -7,20 +7,19 @@
           input.input.is-large(type="text", placeholder="Buscar Canciones", v-model="searchQuery")
           a.button.is-info.is-large(v-on:click="search") Buscar
           a.button.is-danger.is-large &times;
-          p
-            small {{searchMessage}}
+      
+      .container
+        p
+          small {{searchMessage}}
 
       .container.results
         .columns
-          .column(v-for="track in tracks") {{track.nombre}} - {{track.artist}}
+          .column(v-for="track in tracks") 
+            | {{track.name}} - {{track.artists[0].name}}
 </template>
 
 <script>
-const tracks = [
-  { nombre: "cancion 1", artist: "artist 1" },
-  { nombre: "cancion 2", artist: "artist 2" },
-  { nombre: "cancion 3", artist: "artist 3" }
-];
+import trackSevice from "./services/trackService";
 
 export default {
   name: "app",
@@ -40,8 +39,12 @@ export default {
 
   methods: {
     search() {
-      this.tracks = tracks;
-      console.log(this.searchQuery);
+      if (!this.searchQuery) {
+        return;
+      }
+      trackSevice
+        .search(this.searchQuery)
+        .then(response => (this.tracks = response.tracks.items));
     }
   }
 };
