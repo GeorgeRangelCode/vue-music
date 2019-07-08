@@ -1,6 +1,8 @@
 <template lang="pug">
   #app
     pm-header
+    pm-notification(v-show="showNotification")
+      p(slot="body") No se encontraron resultados
     pm-loader(v-show="isLoading")
     section.section(v-show="!isLoading")
       nav.nav
@@ -28,6 +30,7 @@ import PmFooter from "@/components/layout/Footer.vue";
 import PmHeader from "@/components/layout/Header.vue";
 import PmTrack from "@/components/track.vue";
 import PmLoader from "@/components/shared/Loader.vue";
+import PmNotification from "@/components/shared/Notification.vue";
 
 export default {
   name: "app",
@@ -36,7 +39,8 @@ export default {
     PmFooter,
     PmHeader,
     PmTrack,
-    PmLoader
+    PmLoader,
+    PmNotification
   },
 
   data() {
@@ -44,6 +48,7 @@ export default {
       searchQuery: "",
       tracks: [],
       isLoading: false,
+      showNotification: false,
       selectedTrack: ''
     };
   },
@@ -54,16 +59,28 @@ export default {
     }
   },
 
+  watch: {
+    showNotification () {
+      if (this.showNotification) {
+        setTimeout(() => {
+          this.showNotification = false
+        }, 3000)
+      }
+    }
+  },
+
   methods: {
     search() {
       if (!this.searchQuery) {
         return;
       }
       this.isLoading = true;
-      trackSevice.search(this.searchQuery).then(response => {
-        this.tracks = response.tracks.items;
-        this.isLoading = false;
-      });
+      trackSevice.search(this.searchQuery)
+        .then(response => {
+          this.showNotification = response.tracks.total == 0
+          this.tracks = response.tracks.items;
+          this.isLoading = false;
+        });
     },
 
     setSelectTrack (id) {
