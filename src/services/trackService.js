@@ -11,4 +11,8 @@ trackSevice.search = q => {
     .then(response => response.data);
 };
 
+trackSevice.getById = id => {
+  return serviceMusic.get(`/tracks/${id}`).then(response => response.data);
+};
+
 export default trackSevice;
